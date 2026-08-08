@@ -4,6 +4,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from calendar import monthrange
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'my-secret-key-123')  # Ασφαλές κλειδί για το cloud
@@ -63,13 +64,15 @@ def save_user_db(username, password_hash):
         conn.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password_hash))
         conn.commit()
 
+
+
 def login_required(f):
+    @wraps(f)
     def wrap(*args, **kwargs):
         if 'username' not in session:
             flash('Παρακαλώ συνδεθείτε πρώτα.', 'error')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
-    wrap.__name__ = f.__name__
     return wrap
 
 @app.route('/')
