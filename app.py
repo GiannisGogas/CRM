@@ -133,7 +133,7 @@ def delete_task(task_id):
 
 @app.route('/calendar')
 @login_required
-def calendar_view():
+def calendar():
     username = session['username']
     month = int(request.args.get('month', datetime.now().month))
     year = int(request.args.get('year', datetime.now().year))
