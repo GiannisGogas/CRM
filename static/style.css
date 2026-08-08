@@ -1,0 +1,217 @@
+/* Το body style είναι κοινό για όλες τις σελίδες. */
+body 
+{
+    display: flex; /* Χρήση flexbox για την διάταξη του περιεχόμενου. */
+    justify-content: center; /* Ευθυγραμμίση του περιεχόμενου οριζόντια και στο κέντρο. */
+    align-items: center; /* Ευθυγραμμίση του περιεχόμενου κάθετα και στο κέντρο. */
+    margin: 0; /* Αφαίρεση του περιθωρίου της σελίδας. */
+    font-family: 'Roboto', sans-serif; /* Ορισμός της γραμματοσειράς Roboto για το κείμενο. */
+    background-color: #f0f4f8; /* Γκρι χρώμα για το υπόβαθρο της σελίδας. */
+    color: #333; /* Σκούρο γκρι χρώμα για το κείμενο. */
+    min-height: 100vh; /* Ελάχιστο ύψος της σελίδας ώστε να καλύπτει ολόκληρο το παράθυρο. */
+    background-attachment: fixed; /* Ρύθμιση ώστε η εικόνα του φόντου να είναι σταθερή κατά την κύλιση. */
+}
+
+
+
+/* Φόντο για την κεντρική σελίδα */
+#main-page 
+{
+    background-image: url("/static/back1.jpg"); /* Ορίζει την εικόνα φόντου για την κεντρική σελίδα. */
+    background-size: cover; /* Κάλυψη όλο το παράθυρο με την εικόνα. */
+    background-position: center; /* Κεντράρισμα της εικόνας. */
+    background-repeat: no-repeat; /* Αποτροπή επανάληψης της εικόνας.*/
+    background-attachment: fixed; /* Ρύθμιση ώστε η εικόνα να είναι σταθερή κατά την κύλιση. */
+    
+}
+
+/* Φόντο για τη σελίδα επεξεργασίας */
+#edit-page 
+{
+    background-image: url("/static/back2.jpg"); /* Ορίζει την εικόνα φόντου για τη σελίδα επεξεργασίας. */
+    background-size: cover; /* Καλύψη όλο το παράθυρο με την εικόνα. */
+    background-position: center; /* Κεντράρισμα της εικόνας. */
+    background-repeat: no-repeat; /* Αποτροπή επανάληψης της εικόνας.*/
+    background-attachment: fixed; /* Ρύθμιση ώστε η εικόνα να είναι σταθερή κατά την κύλιση. */
+}
+
+/* Επεξεργασία της εμφάνισης για το container που περιέχει τα περιεχόμενα της σελίδας. */
+.container 
+{
+    background-color: rgba(255, 255, 255, 0.5); /* Λευκό φόντο με 50% διαφάνεια (transparency). */
+    padding: 30px; /* Προσθήκη padding(περιθώριο) 30px γύρω από το περιεχόμενο. */
+    border-radius: 15px; /* Στρογγυλεμένες γωνίες για το container. */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Προσθήκη σκιάς στο container. */
+    text-align: center; /* Κεντράρισμα του κείμενου στο container. */
+    width: 90%; /* Το πλάτος του container ορίζεται στο 90% του παραθύρου. */
+    max-width: 500px; /* Το μέγιστο πλάτος ορίζεται στα 500px για να μην γίνει υπερβολικά μεγάλο. */
+}
+
+/* Επεξεργασία της εμφάνισης για τον κύριο τίτλο. */
+h1 
+{
+    margin-bottom: 10px; /* Απόσταση κάτω από τον τίτλο. */
+    color: #2c3e50; /* Σκούρο μπλε χρώμα για τον τίτλο. */
+    font-size: 36px; /* Μέγεθος γραμματοσειράς του τίτλου. */
+}
+
+/* Επεξεργασία της εμφάνισης για την περιγραφή. */
+p.description 
+{
+    margin-bottom: 30px; /* Απόσταση κάτω από την περιγραφή. */
+    color: #7f8c8d; /* Γκρι-μπλε χρώμα για το κείμενο της περιγραφής. */
+    font-size: 16px; /* Μέγεθος γραμματοσειράς της περιγραφής. */
+}
+
+/* Επεξεργασία της εμφάνισης για τις φόρμες. */
+form 
+{
+    margin-bottom: 20px; /* Απόσταση κάτω από τη φόρμα. */
+}
+
+/* Επεξεργασία της εμφάνισης για τις ετικέτες (labels) των φορμών. */
+label 
+{
+    display: block; /* Κάθε ετικέτα εμφανίζεται σε δική της γραμμή. */
+    margin-bottom: 5px; /* Απόσταση κάτω από την ετικέτα. */
+    text-align: left; /* Ευθυγράμμιση του κείμενου στα αριστερά. */
+    font-weight: bold; /* Χρήση έντονης γραφής. */
+    color: #34495e; /* Σκούρο γκρι-μπλε χρώμα για τις ετικέτες. */
+}
+
+/* Επεξεργασία της εμφάνισης για τα πεδία εισαγωγής (input), τα πεδία επιλογής (select) και τα κουμπιά (button). */
+input, select, button 
+{
+    margin: 10px 0; /* Απόσταση πάνω και κάτω από τα στοιχεία. */
+    padding: 10px; /* Προσθήκη padding(περιθωρίου) 10px για τα στοιχεία. */
+    width: 100%; /* Το πλάτος των στοιχείων καλύπτει όλο το πλάτος του container. */
+    box-sizing: border-box; /* Το padding συμπεριλαμβάνεται στο συνολικό πλάτος των στοιχείων. */
+    border: 1px solid #bdc3c7; /* Λεπτό γκρι περίγραμμα για τα στοιχεία. */
+    border-radius: 5px; /* Στρογγυλεμένες γωνίες για τα στοιχεία. */
+    font-size: 16px; /* Μέγεθος γραμματοσειράς για τα στοιχεία. */
+}
+
+/* Επεξεργασία της εμφάνισης για τα κουμπιά */
+button 
+{
+    background-color: #3498db; /* Μπλε χρώμα για τα κουμπιά. */
+    color: white; /* Λευκό χρώμα για το κείμενο του κουμπιού. */
+    border: none; /* Αφαίρεση του περιγράμματος από τα κουμπιά. */
+    cursor: pointer; /* Μετατροπή του κέρσορα σε δείκτη χεριού όταν περνάει πάνω από το κουμπί. */
+    transition: background-color 0.3s ease; /* Μετάβαση στο χρώμα του background. */
+}
+
+/* Αλλαγή χρώματος όταν ο χρήστης περάσει πάνω από το κουμπί. */
+button:hover 
+{
+    background-color: #2980b9; /* Σκούρο μπλε χρώμα όταν ο χρήστης περνάει πάνω από το κουμπί. */
+}
+
+/* Επεξεργασία της εμφάνισης για τη λίστα των εργασιών. */
+ul 
+{
+    list-style-type: none; /* Αφαίρεση των κουκίδων από τη λίστα. */
+    padding: 0; /* Αφαίρεση του εσωτερικού padding(περιθωρίου) από τη λίστα. */
+    margin: 0; /* Αφαίρεση του εξωτερικόύ περιθωρίου από τη λίστα. */
+}
+
+/* Επεξεργασία της εμφάνισης για κάθε στοιχείο της λίστας. */
+li 
+{
+    margin: 10px 0; /* Απόσταση πάνω και κάτω από κάθε στοιχείο της λίστας. */
+    padding: 10px; /* Προσθήκη padding 10px για κάθε στοιχείο της λίστας. */
+    background-color: rgba(236, 240, 241, 0.8); /* Γκρι background με 80% διαφάνεια. */
+    border-radius: 5px; /* Στρογγυλεμένες γωνίες για κάθε στοιχείο της λίστας. */
+    display: flex; /* Χρήση flexbox για την διάταξη των περιεχομένων. */
+    justify-content: space-between; /* Τοποθέτηση των στοιχείων στις άκρες. */
+    align-items: center; /* Κεντράρισμα των στοιχείων κάθετα. */
+}
+
+/* Επεξεργασία της εμφάνισης για τους συνδέσμους(links). */
+a 
+{
+    color: #e74c3c; /* Κόκκινο χρώμα για τους συνδέσμους. */
+    text-decoration: none; /* Αφαίρεση της υπογράμμισης από τους συνδέσμους. */
+    transition: color 0.3s ease; /* Ομαλή μετάβαση στο χρώμα των συνδέσμων όταν αλλάζει. */
+}
+
+/* Αλλαγή χρώματος όταν ο χρήστης περνάει πάνω από έναν σύνδεσμο. */
+a:hover 
+{
+    color: #c0392b; /* Σκούρο κόκκινο χρώμα όταν ο χρήστης περνάει πάνω από τον σύνδεσμο. */
+}
+
+.dropdown-title {
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 0;
+    border-bottom: 1px solid #34495e;
+}
+
+.dropdown-content {
+    display: none;
+    margin-top: 10px;
+}
+
+.dropdown-content a {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 30px;
+    box-sizing: border-box;
+    max-width: 100%; 
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 1200px; /* Αύξησε */
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin: 10px auto 20px;
+    width: 100%;
+    max-width: 1000px; /* Περιορίζει το πλάτος, ώστε να μην είναι πολύ πλατύ */
+}
+
+.day {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 15px 8px;
+    min-height: 90px;    /* Λίγο πιο μεγάλο από default */
+    max-height: 110px;   /* Όριο στο ύψος */
+    min-width: 120px;    /* Λίγο πιο μεγάλο */
+    max-width: 140px;    /* Όριο στο πλάτος */
+    text-align: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-wrap: break-word;
+}
+
+
+
+

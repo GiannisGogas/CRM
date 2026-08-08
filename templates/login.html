@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskTide - Σύνδεση</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-image 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back1.jpg') }}");
+            color: #2c3e50;
+        }
+        body.dark-mode {
+            background-image: url("{{ url_for('static', filename='back4.jpg') }}");
+            color: #ecf0f1;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+            margin: 50px auto;
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode .container {
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+        body.dark-mode .container {
+            background-color: rgba(44, 62, 80, 0.85);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+        }
+        body.light-mode h1 {
+            color: #2c3e50;
+        }
+        body.dark-mode h1 {
+            color: #ecf0f1;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+        body.light-mode label {
+            color: #2c3e50;
+        }
+        body.dark-mode label {
+            color: #ecf0f1;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode input {
+            background-color: #fff;
+            color: #2c3e50;
+        }
+        body.dark-mode input {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border-color: #7f8c8d;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode button {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode button {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        button:hover {
+            background-color: #1abc9c;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .signup-link {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        body.light-mode .signup-link {
+            color: #2ecc71;
+        }
+        body.dark-mode .signup-link {
+            color: #1abc9c;
+        }
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+        .mode-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            display: inline-block;
+            width: auto;
+            min-width: unset;
+        }
+        body.light-mode .mode-toggle {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode .mode-toggle {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        .mode-toggle:hover {
+            background-color: #1abc9c;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    <div class="container">
+        <h1>Σύνδεση</h1>
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post" action="{{ url_for('login') }}">
+            <label for="username">Όνομα Χρήστη:</label>
+            <input type="text" name="username" placeholder="Πληκτρολογήστε το όνομα χρήστη" required>
+            <label for="password">Κωδικός:</label>
+            <input type="password" name="password" placeholder="Πληκτρολογήστε τον κωδικό" required>
+            <button type="submit">Σύνδεση</button>
+        </form>
+        <a class="signup-link" href="{{ url_for('signup') }}">Δεν έχετε λογαριασμό; Εγγραφείτε</a>
+    </div>
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+            } else {
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+            }
+        });
+    </script>
+</body>
+</html>

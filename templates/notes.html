@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskTide - Σημειώσεις</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            transition: background-image 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back3.jpg') }}");
+            color: #2c3e50;
+        }
+        body.dark-mode {
+            background-image: url("{{ url_for('static', filename='back6.jpg') }}");
+            color: #ecf0f1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 0 0 20px;
+            text-align: center;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: #3498db;
+        }
+        .sidebar a.active {
+            background-color: #2980b9;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: rgba(44, 62, 80, 0.9);
+            min-width: 160px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            padding: 10px;
+            margin: 0;
+            border-radius: 0;
+        }
+        .dropdown-content a:hover {
+            background-color: #3498db;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 600px;
+            max-width: calc(90% - 220px);
+            margin: 50px 20px 20px 220px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode .container {
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+        body.dark-mode .container {
+            background-color: rgba(44, 62, 80, 0.85);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+        }
+        body.light-mode h1 {
+            color: #2c3e50;
+        }
+        body.dark-mode h1 {
+            color: #ecf0f1;
+        }
+        .form-section, .note-list {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+        body.light-mode label {
+            color: #2c3e50;
+        }
+        body.dark-mode label {
+            color: #ecf0f1;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode input, body.light-mode textarea {
+            background-color: #fff;
+            color: #2c3e50;
+        }
+        body.dark-mode input, body.dark-mode textarea {
+            background-color: #34495e;
+            color: #ecf0f1;
+            border-color: #7f8c8d;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode button {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode button {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        button:hover {
+            background-color: #1abc9c;
+        }
+        .note-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .note-list th, .note-list td {
+            padding: 10px;
+            border: 1px solid;
+            text-align: left;
+        }
+        body.light-mode .note-list th, body.light-mode .note-list td {
+            border-color: #ccc;
+        }
+        body.dark-mode .note-list th, body.dark-mode .note-list td {
+            border-color: #7f8c8d;
+        }
+        body.light-mode .note-list th {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode .note-list th {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        body.light-mode .note-list td {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        body.dark-mode .note-list td {
+            background-color: rgba(44, 62, 80, 0.9);
+        }
+        .note-list a {
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        body.light-mode .note-list a {
+            color: #e74c3c;
+        }
+        body.dark-mode .note-list a {
+            color: #e74c3c;
+        }
+        .note-list a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        body.light-mode .nav-link {
+            color: #2ecc71;
+        }
+        body.dark-mode .nav-link {
+            color: #1abc9c;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        .mode-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            display: inline-block;
+            width: auto;
+            min-width: unset;
+        }
+        body.light-mode .mode-toggle {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode .mode-toggle {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        .mode-toggle:hover {
+            background-color: #1abc9c;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    <div class="sidebar">
+        {% if username %}
+            <h2>Καλωσήρθες, {{ username }}!</h2>
+            <div class="dropdown">
+                <a href="{{ url_for('index') }}" {% if not request.args.get('filter_priority') %}class="active"{% endif %}>Εργασίες</a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('index') }}" {% if not request.args.get('filter_priority') %}class="active"{% endif %}>Όλες οι Εργασίες</a>
+                    <a href="{{ url_for('index', filter_priority='High') }}" {% if request.args.get('filter_priority') == 'High' %}class="active"{% endif %}>Προτεραιότητα: Υψηλή</a>
+                    <a href="{{ url_for('index', filter_priority='Medium') }}" {% if request.args.get('filter_priority') == 'Medium' %}class="active"{% endif %}>Προτεραιότητα: Μεσαία</a>
+                    <a href="{{ url_for('index', filter_priority='Low') }}" {% if request.args.get('filter_priority') == 'Low' %}class="active"{% endif %}>Προτεραιότητα: Χαμηλή</a>
+                </div>
+            </div>
+            <a href="{{ url_for('calendar') }}">Ημερολόγιο</a>
+            <a href="{{ url_for('contacts') }}">Λίστα Τηλεφώνων</a>
+            <a href="{{ url_for('notes') }}" class="active">Σημειώσεις</a>
+            <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
+        {% else %}
+            <h2>TaskTide</h2>
+            <a href="{{ url_for('login') }}">Σύνδεση</a>
+            <a href="{{ url_for('signup') }}">Εγγραφή</a>
+        {% endif %}
+    </div>
+    <div class="container">
+        <h1>Σημειώσεις</h1>
+        <div class="form-section">
+            <form method="post" action="{{ url_for('notes') }}">
+                <label for="title">Τίτλος:</label>
+                <input type="text" name="title" placeholder="Πληκτρολογήστε τίτλο" required>
+                <label for="note">Σημείωση:</label>
+                <textarea name="note" placeholder="Πληκτρολογήστε τη σημείωσή σας" required></textarea>
+                <button type="submit">Προσθήκη Σημείωσης</button>
+            </form>
+        </div>
+        <div class="note-list">
+            {% if notes %}
+                <table>
+                    <tr>
+                        <th>Τίτλος</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                    {% for note in notes %}
+                        <tr>
+                            <td>{{ note[0] }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_note', note_index=loop.index0) }}">Επεξεργασία</a>
+                                <a href="{{ url_for('delete_note', note_index=loop.index0) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;')">Διαγραφή</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Δεν υπάρχουν σημειώσεις.</p>
+            {% endif %}
+        </div>
+        <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
+    </div>
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+            } else {
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+            }
+        });
+    </script>
+</body>
+</html>

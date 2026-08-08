@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskTide - Ημερολόγιο Εργασιών</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            transition: background-image 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back2.jpg') }}");
+            color: #2c3e50;
+        }
+        body.dark-mode {
+            background-image: url("{{ url_for('static', filename='back5.jpg') }}");
+            color: #ecf0f1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 0 0 20px;
+            text-align: center;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: #3498db;
+        }
+        .sidebar a.active {
+            background-color: #2980b9;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: rgba(44, 62, 80, 0.9);
+            min-width: 160px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            padding: 10px;
+            margin: 0;
+            border-radius: 0;
+        }
+        .dropdown-content a:hover {
+            background-color: #3498db;
+        }
+        .calendar-container {
+            margin-left: 220px;
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode .calendar-container {
+            background-color: transparent;
+        }
+        body.dark-mode .calendar-container {
+            background-color: rgba(44, 62, 80, 0.85);
+        }
+        h1 {
+            text-align: center;
+            margin: 20px 0 10px;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+        }
+        body.light-mode h1 {
+            color: #2c3e50;
+        }
+        body.dark-mode h1 {
+            color: #ecf0f1;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 10px auto 20px;
+            max-width: 1100px;
+            padding: 0 30px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .day {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            padding: 6px;
+            height: 65px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        body.dark-mode .day {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: #ecf0f1;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .back-link {
+            display: inline-block;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        body.light-mode .back-link {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode .back-link {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        .back-link:hover {
+            background-color: #1abc9c;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .nav-button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
+        }
+        body.light-mode .nav-button {
+            background-color: #2ecc71;
+            color: white;
+        }
+        body.dark-mode .nav-button {
+            background-color: #27ae60;
+            color: #ecf0f1;
+        }
+        .nav-button:hover {
+            background-color: #1abc9c;
+        }
+        .mode-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            display: inline-block;
+            width: auto;
+            min-width: unset;
+        }
+        body.light-mode .mode-toggle {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode .mode-toggle {
+            background-color: #2980b9;
+            color: #ecf0f1;
+        }
+        .mode-toggle:hover {
+            background-color: #1abc9c;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    <div class="sidebar">
+        {% if username %}
+            <h2>Καλωσήρθες, {{ username }}!</h2>
+            <div class="dropdown">
+                <a href="{{ url_for('index') }}" {% if not request.args.get('filter_priority') %}class="active"{% endif %}>Εργασίες</a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('index') }}" {% if not request.args.get('filter_priority') %}class="active"{% endif %}>Όλες οι Εργασίες</a>
+                    <a href="{{ url_for('index', filter_priority='High') }}" {% if request.args.get('filter_priority') == 'High' %}class="active"{% endif %}>Προτεραιότητα: Υψηλή</a>
+                    <a href="{{ url_for('index', filter_priority='Medium') }}" {% if request.args.get('filter_priority') == 'Medium' %}class="active"{% endif %}>Προτεραιότητα: Μεσαία</a>
+                    <a href="{{ url_for('index', filter_priority='Low') }}" {% if request.args.get('filter_priority') == 'Low' %}class="active"{% endif %}>Προτεραιότητα: Χαμηλή</a>
+                </div>
+            </div>
+            <a href="{{ url_for('calendar') }}" class="active">Ημερολόγιο</a>
+            <a href="{{ url_for('contacts') }}">Λίστα Τηλεφώνων</a>
+            <a href="{{ url_for('notes') }}">Σημειώσεις</a>
+            <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
+        {% else %}
+            <h2>TaskTide</h2>
+            <a href="{{ url_for('login') }}">Σύνδεση</a>
+            <a href="{{ url_for('signup') }}">Εγγραφή</a>
+        {% endif %}
+    </div>
+    <div class="calendar-container">
+        {% set month_names = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'] %}
+        <h1>{{ month_names[month - 1] }} {{ year }} - Ημερολόγιο Εργασιών</h1>
+        <div class="nav-buttons">
+            <a class="nav-button" href="{{ url_for('calendar', month=month-1 if month > 1 else 12, year=year if month > 1 else year-1) }}">← Προηγούμενος</a>
+            <a class="nav-button" href="{{ url_for('calendar', month=month+1 if month < 12 else 1, year=year if month < 12 else year+1) }}">Επόμενος →</a>
+        </div>
+        <div class="calendar">
+            {% for day in range(1, days_in_month + 1) %}
+                {% set date_str = '%04d-%02d-%02d' % (year, month, day) %}
+                <div class="day">
+                    {{ day }}
+                    {% if date_str in task_dict and task_dict[date_str]|length > 0 %}
+                        {% for task_tuple in task_dict[date_str] %}
+                            {% set task, task_index = task_tuple %}
+                            {% set dot_bottom = 8 + loop.index0 * 10 %}
+                            <a href="{{ url_for('edit_task_by_date', date=date_str, task_index=task_index) }}">
+                                <div class="dot" style="--bottom: {{ dot_bottom }}px; bottom: var(--bottom)" title="{{ task[0] | e }}"></div>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <a class="back-link" href="{{ url_for('index') }}">← Επιστροφή</a>
+    </div>
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+            } else {
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+            }
+        });
+    </script>
+</body>
+</html>
