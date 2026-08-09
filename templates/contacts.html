@@ -280,7 +280,7 @@
                             <td>{{ contact[0] }}</td>
                             <td>{{ contact[1] }}</td>
                             <td>
-                                <a href="{{ url_for('delete_contact', contact_index=loop.index0) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την επαφή;')">Διαγραφή</a>
+                                <a href="{{ url_for('delete_contact', contact_id=contact.id) }}">Διαγραφή</a>
                             </td>
                         </tr>
                     {% endfor %}
