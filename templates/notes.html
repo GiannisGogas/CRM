@@ -283,28 +283,29 @@
                 <button type="submit">Προσθήκη Σημείωσης</button>
             </form>
         </div>
-        <div class="note-list">
-            {% if notes %}
-                <table>
+    <div class="note-list">
+        {% if notes %}
+            <table>
+                <tr>
+                    <th>Τίτλος</th>
+                    <th>Περιεχόμενο</th>
+                    <th>Ενέργειες</th>
+                </tr>
+                {% for note in notes %}
                     <tr>
-                        <th>Τίτλος</th>
-                        <th>Ενέργειες</th>
+                        <td>{{ note.title }}</td>
+                        <td>{{ note.content }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_note', note_id=note.id) }}">Επεξεργασία</a>
+                            <a href="{{ url_for('delete_note', note_id=note.id) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;')">Διαγραφή</a>
+                        </td>
                     </tr>
-                    {% for note in notes %}
-                        <tr>
-                            <td>{{ note.title }}</td>
-                            <td>{{ note.content }}</td>
-                            <td>
-                                <a href="{{ url_for('edit_note', note_id=note.id) }}">Επεξεργασία</a>
-                                <a href="{{ url_for('delete_note', note_id=note.id) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;')">Διαγραφή</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p>Δεν υπάρχουν σημειώσεις.</p>
-            {% endif %}
-        </div>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Δεν υπάρχουν σημειώσεις.</p>
+        {% endif %}
+    </div>
         <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
     </div>
     <script>
