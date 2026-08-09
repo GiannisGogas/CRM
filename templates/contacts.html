@@ -255,27 +255,41 @@
         <a href="{{ url_for('contacts') }}" class="active">Λίστα Τηλεφώνων</a>
         <a href="{{ url_for('notes') }}">Σημειώσεις</a>
         <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
-    <div class="contact-list">
-    {% if contacts %}
-        <table>
-            <tr>
-                <th>Όνομα</th>
-                <th>Τηλέφωνο</th>
-                <th>Ενέργειες</th>
-            </tr>
-            {% for contact in contacts %}
-                <tr>
-                    <td>{{ contact.name }}</td>
-                    <td>{{ contact.phone }}</td>
-                    <td>
-                        <a href="{{ url_for('delete_contact', contact_id=contact.id) }}">Διαγραφή</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>Δεν υπάρχουν επαφές.</p>
-    {% endif %}
+    </div>
+    <div class="container">
+        <h1>Λίστα Τηλεφώνων</h1>
+        <div class="form-section">
+            <form method="post" action="{{ url_for('contacts') }}">
+                <label for="name">Όνομα:</label>
+                <input type="text" name="name" placeholder="Πληκτρολογήστε το όνομα" required>
+                <label for="phone">Τηλέφωνο:</label>
+                <input type="text" name="phone" placeholder="Πληκτρολογήστε το τηλέφωνο" required>
+                <button type="submit">Προσθήκη Επαφής</button>
+            </form>
+        </div>
+        <div class="contact-list">
+            {% if contacts %}
+                <table>
+                    <tr>
+                        <th>Όνομα</th>
+                        <th>Τηλέφωνο</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                    {% for contact in contacts %}
+                        <tr>
+                            <td>{{ contact.name }}</td>
+                            <td>{{ contact.phone }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_contact', contact_id=contact.id) }}">Διαγραφή</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Δεν υπάρχουν επαφές.</p>
+            {% endif %}
+        </div>
+        <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
     </div>
     <script>
         function toggleMode() {
