@@ -213,7 +213,7 @@
                 <a href="{{ url_for('index', filter_priority='Low') }}" {% if request.args.get('filter_priority') == 'Low' %}class="active"{% endif %}>Προτεραιότητα: Χαμηλή</a>
             </div>
         </div>
-        <a href="{{ url_for('calendar_view') }}">Ημερολόγιο</a>
+        <a href="{{ url_for('calendar') }}">Ημερολόγιο</a>
         <a href="{{ url_for('contacts') }}">Λίστα Τηλεφώνων</a>
         <a href="{{ url_for('notes') }}">Σημειώσεις</a>
         <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
