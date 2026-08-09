@@ -294,8 +294,8 @@
                         <tr>
                             <td>{{ note[0] }}</td>
                             <td>
-                                <a href="{{ url_for('edit_note', note_index=loop.index0) }}">Επεξεργασία</a>
-                                <a href="{{ url_for('delete_note', note_index=loop.index0) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;')">Διαγραφή</a>
+                                <a href="{{ url_for('edit_note', note_id=note.id) }}">Επεξεργασία</a>
+                                <a href="{{ url_for('delete_note', note_id=note.id) }}" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;')">Διαγραφή</a>
                             </td>
                         </tr>
                     {% endfor %}
