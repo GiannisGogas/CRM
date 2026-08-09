@@ -220,7 +220,7 @@
     </div>
     <div class="container">
         <h1>Επεξεργασία Εργασίας</h1>
-        <form action="{{ url_for('edit_task', task_index=task_index) }}" method="post">
+        <form action="{{ url_for('edit_task', task_id=task.id) }}" method="post">
             <label for="task">Εργασία:</label>
             <input type="text" name="task" value="{{ task[0] }}" required>
             <label for="deadline">Προθεσμία:</label>
