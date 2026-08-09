@@ -213,7 +213,7 @@
                 <a href="{{ url_for('index', filter_priority='Low') }}" {% if request.args.get('filter_priority') == 'Low' %}class="active"{% endif %}>Προτεραιότητα: Χαμηλή</a>
             </div>
         </div>
-        <a href="{{ url_for('calendar') }}">Ημερολόγιο</a>
+        <a href="{{ url_for('calendar_view') }}">Ημερολόγιο</a>
         <a href="{{ url_for('contacts') }}">Λίστα Τηλεφώνων</a>
         <a href="{{ url_for('notes') }}">Σημειώσεις</a>
         <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
@@ -222,14 +222,14 @@
         <h1>Επεξεργασία Εργασίας</h1>
         <form action="{{ url_for('edit_task', task_id=task.id) }}" method="post">
             <label for="task">Εργασία:</label>
-            <input type="text" name="task" value="{{ task[0] }}" required>
+            <input type="text" name="task" value="{{ task.task }}" required>
             <label for="deadline">Προθεσμία:</label>
-            <input type="date" name="deadline" value="{{ task[1] }}" required>
+            <input type="date" name="deadline" value="{{ task.deadline }}" required>
             <label for="priority">Προτεραιότητα:</label>
             <select name="priority">
-                <option value="High" {% if task[2] == 'High' %}selected{% endif %}>Υψηλή</option>
-                <option value="Medium" {% if task[2] == 'Medium' %}selected{% endif %}>Μεσαία</option>
-                <option value="Low" {% if task[2] == 'Low' %}selected{% endif %}>Χαμηλή</option>
+                <option value="High" {% if task.priority == 'High' %}selected{% endif %}>Υψηλή</option>
+                <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Μεσαία</option>
+                <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Χαμηλή</option>
             </select>
             <button type="submit">Ενημέρωση Εργασίας</button>
         </form>
