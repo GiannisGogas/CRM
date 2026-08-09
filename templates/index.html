@@ -279,15 +279,15 @@
                         <th>Ενέργειες</th>
                     </tr>
                     {% for task in tasks %}
-                        <tr>
-                            <td>{{ task[0] }}</td>
-                            <td>{{ task[1] }}</td>
-                            <td>{{ task[2] }}</td>
-                            <td>
-                                <a href="{{ url_for('edit_task', task_id=task.id) }}">Επεξεργασία</a>
-                                <a href="{{ url_for('delete_task', task_id=task.id) }}">Διαγραφή</a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ task.task }}</td>          <!-- Εργασία -->
+                        <td>{{ task.deadline }}</td>       <!-- Προθεσμία -->
+                        <td>{{ task.priority }}</td>       <!-- Προτεραιότητα -->
+                        <td>
+                            <a href="{{ url_for('edit_task', task_id=task.id) }}">Επεξεργασία</a>
+                            <a href="{{ url_for('delete_task', task_id=task.id) }}">Διαγραφή</a>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </table>
             {% else %}
