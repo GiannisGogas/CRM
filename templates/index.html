@@ -284,8 +284,8 @@
                             <td>{{ task[1] }}</td>
                             <td>{{ task[2] }}</td>
                             <td>
-                                <a href="{{ url_for('edit_task', task_index=loop.index0) }}">Επεξεργασία</a>
-                                <a href="{{ url_for('delete_task', task_index=loop.index0) }}">Διαγραφή</a>
+                                <a href="{{ url_for('edit_task', task_id=task.id) }}">Επεξεργασία</a>
+                                <a href="{{ url_for('delete_task', task_id=task.id) }}">Διαγραφή</a>
                             </td>
                         </tr>
                     {% endfor %}
