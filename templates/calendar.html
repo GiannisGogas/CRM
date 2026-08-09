@@ -256,11 +256,10 @@
                 <div class="day">
                     {{ day }}
                     {% if date_str in task_dict and task_dict[date_str]|length > 0 %}
-                        {% for task_tuple in task_dict[date_str] %}
-                            {% set task, task_index = task_tuple %}
+                        {% for task in task_dict[date_str] %}
                             {% set dot_bottom = 8 + loop.index0 * 10 %}
-                            <a href="{{ url_for('edit_task', task_id=task.id) }}"></a>
-                                <div class="dot" style="--bottom: {{ dot_bottom }}px; bottom: var(--bottom)" title="{{ task[0] | e }}"></div>
+                            <a href="{{ url_for('edit_task', task_id=task.id) }}">
+                                <div class="dot" style="--bottom: {{ dot_bottom }}px; bottom: var(--bottom)" title="{{ task.task | e }}"></div>
                             </a>
                         {% endfor %}
                     {% endif %}
