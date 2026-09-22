@@ -225,11 +225,13 @@
     <div class="container">
         <h1>Επεξεργασία Σημείωσης</h1>
         <form action="{{ url_for('edit_note', note_id=note.id) }}" method="post">
-            <label for="title">Τίτλος:</label>
-            <input type="text" name="title" value="{{ note[0] }}" required>
-            <label for="note">Σημείωση:</label>
-            <textarea name="note" required>{{ note[1] }}</textarea>
-            <button type="submit">Ενημέρωση Σημείωσης</button>
+        <label for="title">Τίτλος:</label>
+        <input type="text" name="title" value="{{ note.title }}" required>
+    
+        <label for="content">Σημείωση:</label>
+        <textarea name="content" required>{{ note.content }}</textarea>
+    
+        <button type="submit">Ενημέρωση Σημείωσης</button>
         </form>
         <a class="back-link" href="{{ url_for('notes') }}">Επιστροφή</a>
     </div>

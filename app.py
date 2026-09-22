@@ -198,20 +198,28 @@ def notes():
     return render_template('notes.html', notes=notes, username=username)
 
 @app.route('/edit_note/<int:note_id>', methods=['GET', 'POST'])
-@login_required
 def edit_note(note_id):
-    username = session['username']
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
     with get_db() as conn:
-        if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['note']
-            conn.execute('UPDATE notes SET title = ?, content = ? WHERE id = ? AND username = ?', (title, content, note_id, username))
+        note = conn.execute('SELECT * FROM notes WHERE id = ? AND username = ?', (note_id, username)).fetchone()
+        
+    if not note:
+        return redirect(url_for('notes'))
+        
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content') # Αν στο HTML το ονόμασες content
+        
+        with get_db() as conn:
+            conn.execute('UPDATE notes SET title = ?, content = ? WHERE id = ? AND username = ?',
+                         (title, content, note_id, username))
             conn.commit()
-            return redirect(url_for('notes'))
+        return redirect(url_for('notes'))
         
-        note = conn.execute('SELECT id, title, content FROM notes WHERE id = ? AND username = ?', (note_id, username)).fetchone()
-        
-    return render_template('edit_note.html', note=note, note_index=note_id, username=username)
+    return render_template('edit_note.html', note=note, username=username)
 
 @app.route('/delete_note/<int:note_id>')
 @login_required
