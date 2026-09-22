@@ -178,18 +178,22 @@ def delete_contact(contact_id):
     return redirect(url_for('contacts'))
 
 @app.route('/notes', methods=['GET', 'POST'])
-@login_required
 def notes():
-    username = session['username']
-    with get_db() as conn:
-        if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['note']
-            conn.execute('INSERT INTO notes (username, title, content) VALUES (?, ?, ?)', (username, title, content))
-            conn.commit()
-            return redirect(url_for('notes'))
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
         
-        notes = conn.execute('SELECT id, title, content FROM notes WHERE username = ?', (username,)).fetchall()
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('note') # ή 'content' ανάλογα με το name στο HTML
+        with get_db() as conn:
+            conn.execute('INSERT INTO notes (username, title, content) VALUES (?, ?, ?)', 
+                         (username, title, content))
+            conn.commit()
+        return redirect(url_for('notes'))
+        
+    with get_db() as conn:
+        notes = conn.execute('SELECT * FROM notes WHERE username = ?', (username,)).fetchall()
         
     return render_template('notes.html', notes=notes, username=username)
 
