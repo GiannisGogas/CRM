@@ -4,9 +4,24 @@
     <meta charset="UTF-8">
     <title>Συμβάσεις</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back2.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        body.dark-mode {
+            background-image: url("{{ url_for('static', filename='back4.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 <body class="light-mode">
     <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    
     <div class="sidebar">
         <h2>Καλωσήρθες, {{ username }}!</h2>
         <a href="{{ url_for('index') }}">Εργασίες</a>
@@ -16,8 +31,10 @@
         <a href="{{ url_for('notes') }}">Σημειώσεις</a>
         <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
     </div>
+
     <div class="container">
         <h1>Διαχείριση Συμβάσεων</h1>
+        
         <div class="form-section">
             <form method="post" action="{{ url_for('contracts') }}">
                 <label for="title">Τίτλος Έργου / Σύμβασης:</label>
@@ -67,8 +84,10 @@
                 <p>Δεν υπάρχουν καταχωρημένες συμβάσεις.</p>
             {% endif %}
         </div>
+        
         <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
     </div>
+
     <script>
         function toggleMode() {
             const body = document.body;
@@ -85,6 +104,7 @@
                 localStorage.setItem('theme', 'light');
             }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             const body = document.body;
