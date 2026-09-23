@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Συμβάσεις</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="light-mode">
+    <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    <div class="sidebar">
+        <h2>Καλωσήρθες, {{ username }}!</h2>
+        <a href="{{ url_for('index') }}">Εργασίες</a>
+        <a href="{{ url_for('calendar') }}">Ημερολόγιο</a>
+        <a href="{{ url_for('contacts') }}">Λίστα Τηλεφώνων</a>
+        <a href="{{ url_for('contracts') }}" class="active">Συμβάσεις</a>
+        <a href="{{ url_for('notes') }}">Σημειώσεις</a>
+        <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
+    </div>
+    <div class="container">
+        <h1>Διαχείριση Συμβάσεων</h1>
+        <div class="form-section">
+            <form method="post" action="{{ url_for('contracts') }}">
+                <label for="title">Τίτλος Έργου / Σύμβασης:</label>
+                <input type="text" name="title" placeholder="π.χ. Μελέτη Η/Μ Κτιρίου" required>
+                
+                <label for="client">Πελάτης:</label>
+                <input type="text" name="client" placeholder="Όνομα πελάτη" required>
+                
+                <label for="manager">Υπεύθυνος Μελέτης:</label>
+                <input type="text" name="manager" placeholder="Όνομα Μηχανικού" required>
+                
+                <label for="deadline">Προθεσμία Παράδοσης:</label>
+                <input type="date" name="deadline" required>
+                
+                <label for="amount">Ποσό (€):</label>
+                <input type="text" name="amount" placeholder="π.χ. 1500">
+                
+                <button type="submit">Προσθήκη Σύμβασης</button>
+            </form>
+        </div>
+        
+        <div class="contract-list">
+            {% if contracts %}
+                <table>
+                    <tr>
+                        <th>Τίτλος</th>
+                        <th>Πελάτης</th>
+                        <th>Υπεύθυνος</th>
+                        <th>Προθεσμία</th>
+                        <th>Ποσό</th>
+                        <th>Ενέργειες</th>
+                    </tr>
+                    {% for contract in contracts %}
+                        <tr>
+                            <td>{{ contract.title }}</td>
+                            <td>{{ contract.client }}</td>
+                            <td>{{ contract.manager }}</td>
+                            <td>{{ contract.deadline }}</td>
+                            <td>{{ contract.amount }} €</td>
+                            <td>
+                                <a href="{{ url_for('delete_contract', contract_id=contract.id) }}" onclick="return confirm('Είστε σίγουροι;')">Διαγραφή</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Δεν υπάρχουν καταχωρημένες συμβάσεις.</p>
+            {% endif %}
+        </div>
+        <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
+    </div>
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const body = document.body;
+            const modeToggle = document.querySelector('.mode-toggle');
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                modeToggle.textContent = 'Φωτεινή Λειτουργία';
+            } else {
+                body.classList.add('light-mode');
+                modeToggle.textContent = 'Σκοτεινή Λειτουργία';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -50,6 +50,18 @@ def init_db():
                 content TEXT NOT NULL
             )
         ''')
+
+        conn.execute('''
+        CREATE TABLE IF NOT EXISTS contracts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            title TEXT NOT NULL,
+            client TEXT NOT NULL,
+            manager TEXT NOT NULL,
+            deadline TEXT NOT NULL,
+            amount TEXT
+            )
+        ''')
         conn.commit()
 
 init_db()
@@ -261,6 +273,43 @@ def signup():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/contracts', methods=['GET', 'POST'])
+def contracts():
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
+    if request.method == 'POST':
+        title = request.form.get('title')
+        client = request.form.get('client')
+        manager = request.form.get('manager')
+        deadline = request.form.get('deadline')
+        amount = request.form.get('amount')
+        
+        with get_db() as conn:
+            conn.execute('''
+                INSERT INTO contracts (username, title, client, manager, deadline, amount)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (username, title, client, manager, deadline, amount))
+            conn.commit()
+        return redirect(url_for('contracts'))
+        
+    with get_db() as conn:
+        contracts_list = conn.execute('SELECT * FROM contracts WHERE username = ?', (username,)).fetchall()
+        
+    return render_template('contracts.html', contracts=contracts_list, username=username)
+
+@app.route('/delete_contract/<int:contract_id>')
+def delete_contract(contract_id):
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
+    with get_db() as conn:
+        conn.execute('DELETE FROM contracts WHERE id = ? AND username = ?', (contract_id, username))
+        conn.commit()
+    return redirect(url_for('contracts'))
 
 if __name__ == '__main__':
     app.run(debug=True)
