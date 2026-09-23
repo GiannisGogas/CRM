@@ -17,10 +17,66 @@
             background-position: center;
             background-attachment: fixed;
         }
+        /* Διόρθωση διάταξης για να μην επικαλύπτεται το sidebar */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 20px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .sidebar h2 {
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            padding: 0 10px;
+        }
+        .sidebar a {
+            display: block;
+            color: #fff;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #007bff;
+        }
+        .container {
+            margin-left: 270px;
+            padding: 30px;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background-color: #007bff;
+        }
     </style>
 </head>
 <body class="light-mode">
-    <button class="mode-toggle" onclick="toggleMode()">Σκοτεινή Λειτουργία</button>
+    <button class="mode-toggle" onclick="toggleMode()" style="position: fixed; top: 15px; right: 20px; z-index: 1000;">Σκοτεινή Λειτουργία</button>
     
     <div class="sidebar">
         <h2>Καλωσήρθες, {{ username }}!</h2>
@@ -55,6 +111,18 @@
                 <button type="submit">Προσθήκη Σύμβασης</button>
             </form>
         </div>
+
+        <!-- Κουμπιά Φίλτρων Λήξης -->
+        <div style="margin-top: 30px;">
+            <h3>Φίλτρα Λήξης Συμβάσεων:</h3>
+            <div class="filter-section">
+                <a href="{{ url_for('contracts', filter='all') }}" class="filter-btn {% if current_filter == 'all' %}active{% endif %}">Όλες</a>
+                <a href="{{ url_for('contracts', filter='month') }}" class="filter-btn {% if current_filter == 'month' %}active{% endif %}">Λήγουν σε 1 Μήνα</a>
+                <a href="{{ url_for('contracts', filter='quarter') }}" class="filter-btn {% if current_filter == 'quarter' %}active{% endif %}">Λήγουν σε 3 Μήνες</a>
+                <a href="{{ url_for('contracts', filter='half') }}" class="filter-btn {% if current_filter == 'half' %}active{% endif %}">Λήγουν σε 6 Μήνες</a>
+                <a href="{{ url_for('contracts', filter='year') }}" class="filter-btn {% if current_filter == 'year' %}active{% endif %}">Λήγουν σε 1 Έτος</a>
+            </div>
+        </div>
         
         <div class="contract-list">
             {% if contracts %}
@@ -81,11 +149,11 @@
                     {% endfor %}
                 </table>
             {% else %}
-                <p>Δεν υπάρχουν καταχωρημένες συμβάσεις.</p>
+                <p>Δεν υπάρχουν καταχωρημένες συμβάσεις για το επιλεγμένο διάστημα.</p>
             {% endif %}
         </div>
         
-        <a class="nav-link" href="{{ url_for('index') }}">Επιστροφή στην Αρχική</a>
+        <a class="nav-link" href="{{ url_for('index') }}" style="display:inline-block; margin-top:20px;">Επιστροφή στην Αρχική</a>
     </div>
 
     <script>

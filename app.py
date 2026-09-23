@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, flash, ses
 import os
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from calendar import monthrange
 from functools import wraps
 
@@ -295,10 +295,39 @@ def contracts():
             conn.commit()
         return redirect(url_for('contracts'))
         
+    filter_type = request.args.get('filter', 'all')
+    
     with get_db() as conn:
         contracts_list = conn.execute('SELECT * FROM contracts WHERE username = ?', (username,)).fetchall()
         
-    return render_template('contracts.html', contracts=contracts_list, username=username)
+    # Φιλτράρισμα με βάση την προθεσμία (deadline)
+    today = datetime.today().date()
+    filtered_contracts = []
+    
+    for c in contracts_list:
+        if not c['deadline']:
+            continue
+        try:
+            d_date = datetime.strptime(c['deadline'], '%Y-%m-%d').date()
+        except ValueError:
+            continue
+            
+        diff_days = (d_date - today).days
+        if diff_days < 0:
+            continue # Έχει λήξει, το προσπερνάμε ή το βάζουμε παντού
+            
+        if filter_type == 'month' and diff_days <= 30:
+            filtered_contracts.append(c)
+        elif filter_type == 'quarter' and diff_days <= 90:
+            filtered_contracts.append(c)
+        elif filter_type == 'half' and diff_days <= 180:
+            filtered_contracts.append(c)
+        elif filter_type == 'year' and diff_days <= 365:
+            filtered_contracts.append(c)
+        elif filter_type == 'all':
+            filtered_contracts.append(c)
+            
+    return render_template('contracts.html', contracts=filtered_contracts, username=username, current_filter=filter_type)
 
 @app.route('/delete_contract/<int:contract_id>')
 def delete_contract(contract_id):
