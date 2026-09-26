@@ -144,28 +144,41 @@ def delete_task(task_id):
     return redirect(url_for('index'))
 
 @app.route('/calendar')
-@login_required
 def calendar():
-    username = session['username']
-    month = int(request.args.get('month', datetime.now().month))
-    year = int(request.args.get('year', datetime.now().year))
-    _, days_in_month = monthrange(year, month)
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
+    # Παίρνουμε τον μήνα και το έτος από το URL (αν δεν υπάρχουν, βάζουμε τα τρέχοντα)
+    now = datetime.now()
+    month = request.args.get('month', type=int) or now.month
+    year = request.args.get('year', type=int) or now.year
+    
+    # Υπολογισμός ημερών του μήνα
+    days_in_month = monthrange(year, month)[1]
     
     with get_db() as conn:
-        # Παίρνουμε τις εργασίες
+        # Παίρνουμε τις εργασίες του χρήστη
         tasks = conn.execute('SELECT * FROM tasks WHERE username = ?', (username,)).fetchall()
-        # Παίρνουμε και τις συμβάσεις
+        # Παίρνουμε και τις συμβάσεις του χρήστη
         contracts = conn.execute('SELECT * FROM contracts WHERE username = ?', (username,)).fetchall()
         
+    # Δημιουργία λεξικού για τις εργασίες ανά ημερομηνία
     task_dict = {}
     for task in tasks:
-        deadline = task['deadline']
-        if deadline in task_dict:
-            task_dict[deadline].append(task)
-        else:
-            task_dict[deadline] = [task]
-            
-    return render_template('calendar.html', tasks=tasks, contracts=contracts, username=username)
+        d = task['date'] # Υποθέτουμε ότι η ημερομηνία αποθηκεύεται ως 'YYYY-MM-DD'
+        if d not in task_dict:
+            task_dict[d] = []
+        task_dict[d].append(task)
+        
+    return render_template('calendar.html', 
+                           tasks=tasks, 
+                           contracts=contracts, 
+                           task_dict=task_dict, 
+                           month=month, 
+                           year=year, 
+                           days_in_month=days_in_month, 
+                           username=username)
 
 @app.route('/contacts', methods=['GET', 'POST'])
 @login_required
