@@ -152,7 +152,10 @@ def calendar():
     _, days_in_month = monthrange(year, month)
     
     with get_db() as conn:
-        tasks = conn.execute('SELECT id, task, deadline, priority FROM tasks WHERE username = ?', (username,)).fetchall()
+        # Παίρνουμε τις εργασίες
+        tasks = conn.execute('SELECT * FROM tasks WHERE username = ?', (username,)).fetchall()
+        # Παίρνουμε και τις συμβάσεις
+        contracts = conn.execute('SELECT * FROM contracts WHERE username = ?', (username,)).fetchall()
         
     task_dict = {}
     for task in tasks:
@@ -162,7 +165,7 @@ def calendar():
         else:
             task_dict[deadline] = [task]
             
-    return render_template('calendar.html', month=month, year=year, days_in_month=days_in_month, task_dict=task_dict, username=username)
+    return render_template('calendar.html', tasks=tasks, contracts=contracts, username=username)
 
 @app.route('/contacts', methods=['GET', 'POST'])
 @login_required
