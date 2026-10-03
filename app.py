@@ -365,5 +365,31 @@ def delete_contract(contract_id):
         conn.commit()
     return redirect(url_for('contracts'))
 
+
+@app.route('/clients')
+def clients():
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
+    with get_db() as conn:
+        # Παίρνουμε όλους τους μοναδικούς πελάτες από τις συμβάσεις ή τον πίνακα clients
+        clients_list = conn.execute('SELECT DISTINCT client FROM contracts WHERE username = ? ORDER BY client ASC', (username,)).fetchall()
+        
+    return render_template('clients.html', clients=clients_list, username=username)
+
+# 2. Ατομική Καρτέλα Πελάτη (με τις συμβάσεις του)
+@app.route('/client/<path:client_name>')
+def client_detail(client_name):
+    username = session.get('username')
+    if not username:
+        return redirect(url_for('login'))
+        
+    with get_db() as conn:
+        # Παίρνουμε όλες τις συμβάσεις του συγκεκριμένου πελάτη
+        client_contracts = conn.execute('SELECT * FROM contracts WHERE username = ? AND client = ?', (username, client_name)).fetchall()
+        
+    return render_template('client_detail.html', client_name=client_name, contracts=client_contracts, username=username)
+
 if __name__ == '__main__':
     app.run(debug=True)
