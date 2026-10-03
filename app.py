@@ -163,13 +163,14 @@ def calendar():
         # Παίρνουμε και τις συμβάσεις του χρήστη
         contracts = conn.execute('SELECT * FROM contracts WHERE username = ?', (username,)).fetchall()
         
-    # Δημιουργία λεξικού για τις εργασίες ανά ημερομηνία
     task_dict = {}
     for task in tasks:
-        d = task['date'] # Υποθέτουμε ότι η ημερομηνία αποθηκεύεται ως 'YYYY-MM-DD'
-        if d not in task_dict:
-            task_dict[d] = []
-        task_dict[d].append(task)
+        # Ελέγχουμε ποιο κλειδί υπάρχει για την ημερομηνία ('date' ή 'deadline')
+        d = task.get('date') or task.get('deadline')
+        if d:
+            if d not in task_dict:
+                task_dict[d] = []
+            task_dict[d].append(task)
         
     return render_template('calendar.html', 
                            tasks=tasks, 
