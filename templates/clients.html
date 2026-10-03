@@ -4,18 +4,73 @@
     <meta charset="UTF-8">
     <title>Πελάτες - CRM</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f9; }
-        .sidebar { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: rgba(0, 0, 0, 0.8); padding-top: 20px; z-index: 100; }
-        .sidebar h2 { color: #fff; font-size: 18px; text-align: center; }
-        .sidebar a { display: block; color: #fff; padding: 12px 20px; text-decoration: none; }
-        .sidebar a:hover, .sidebar a.active { background-color: #007bff; }
-        .container { margin-left: 270px; padding: 40px; max-width: 900px; }
-        .card-list { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .client-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back2.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        body.dark-mode {
+            background-image: url("{{ url_for('static', filename='back4.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 20px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .sidebar h2 {
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            padding: 0 10px;
+        }
+        .sidebar a {
+            display: block;
+            color: #fff;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #007bff;
+        }
+        .container {
+            margin-left: 270px;
+            padding: 40px;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+        .card-list {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .client-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .client-item:last-child { border-bottom: none; }
         .client-link { font-size: 18px; color: #007bff; text-decoration: none; font-weight: bold; }
         .client-link:hover { text-decoration: underline; }
-        .back-link { display: inline-block; margin-top: 20px; color: #6c757d; text-decoration: none; }
+        .back-link { display: inline-block; margin-top: 20px; color: #fff; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 4px; text-decoration: none; }
     </style>
 </head>
 <body>
