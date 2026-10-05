@@ -5,14 +5,66 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from calendar import monthrange
 from functools import wraps
+import psycopg2
+import psycopg2.extras
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'my-secret-key-123')  # Ασφαλές κλειδί για το cloud
 
-DB_NAME = 'database.db'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+class PostgresCursorWrapper:
+    def __init__(self, cursor):
+        self.cursor = cursor
+    def execute(self, query, params=None):
+        pg_query = query.replace('?', '%s')
+        if params:
+            return self.cursor.execute(pg_query, params)
+        return self.cursor.execute(pg_query)
+    def fetchall(self):
+        return self.cursor.fetchall()
+    def fetchone(self):
+        return self.cursor.fetchone()
+    def close(self):
+        return self.cursor.close()
+
+class PostgresConnectionWrapper:
+    def __init__(self, conn):
+        self.conn = conn
+    def cursor(self):
+        return PostgresCursorWrapper(self.conn.cursor())
+    def execute(self, query, params=None):
+        pg_query = query.replace('?', '%s')
+        cur = self.conn.cursor()
+        if params:
+            cur.execute(pg_query, params)
+        else:
+            cur.execute(pg_query)
+        return PostgresCursorWrapper(cur)
+    def commit(self):
+        return self.conn.commit()
+    def close(self):
+        return self.conn.close()
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            self.conn.rollback()
+        else:
+            self.conn.commit()
+        self.conn.close()
 
 def get_db():
-    conn = sqlite3.connect(DB_NAME)
+    if DATABASE_URL:
+        try:
+            # Σύνδεση με Supabase PostgreSQL
+            conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+            return PostgresConnectionWrapper(conn)
+        except Exception as e:
+            print(f"⚠️ ΣΦΑΛΜΑ ΣΥΝΔΕΣΗΣ ΜΕ SUPABASE: {e}")
+    
+    # Fallback σε τοπική SQLite αν αποτύχει ή λείπει το URL
+    conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
