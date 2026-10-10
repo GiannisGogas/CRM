@@ -406,12 +406,20 @@ def contracts():
         manager = request.form.get('manager')
         deadline = request.form.get('deadline')
         amount = request.form.get('amount')
+        billing_type = request.form.get('billing_type')
+        distance_km = request.form.get('distance_km')
+        safety_engineer_fee = request.form.get('safety_engineer_fee')
+        invoice_date = request.form.get('invoice_date')
         
         with get_db() as conn:
             conn.execute('''
-                INSERT INTO contracts (username, title, client, manager, deadline, amount)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (username, title, client, manager, deadline, amount))
+                INSERT INTO contracts (
+                    username, title, client, manager, deadline, amount, 
+                    billing_type, distance_km, safety_engineer_fee, invoice_date
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (username, title, client, manager, deadline, amount, 
+                  billing_type, distance_km, safety_engineer_fee, invoice_date))
             conn.commit()
         return redirect(url_for('contracts'))
         
