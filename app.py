@@ -525,3 +525,58 @@ def client_detail(client_id):
         client_contracts = conn.execute('SELECT * FROM contracts WHERE username = ? AND client = ?', (username, client['name'])).fetchall()
         
     return render_template('client_detail.html', client=client, contracts=client_contracts, username=username)
+
+
+# Επεξεργασία Πελάτη
+@app.route('/client/edit/<int:client_id>', methods=['GET', 'POST'])
+@login_required
+def edit_client(client_id):
+    username = session['username']
+    with get_db() as conn:
+        client = conn.execute('SELECT * FROM clients WHERE id = ? AND username = ?', (client_id, username)).fetchone()
+        if not client:
+            flash('Ο πελάτης δεν βρέθηκε.', 'error')
+            return redirect(url_for('clients'))
+            
+        if request.method == 'POST':
+            name = request.form.get('name')
+            phone = request.form.get('phone')
+            email = request.form.get('email')
+            address = request.form.get('address')
+            afm = request.form.get('afm')
+            kad = request.form.get('kad')
+            employees_count = request.form.get('employees_count')
+            employee_categories = request.form.get('employee_categories')
+            working_hours = request.form.get('working_hours')
+            taxis_sepnet_codes = request.form.get('taxis_sepnet_codes')
+            legal_representative = request.form.get('legal_representative')
+            accounting_office = request.form.get('accounting_office')
+
+            conn.execute('''
+                UPDATE clients SET 
+                    name = ?, phone = ?, email = ?, address = ?, afm = ?, kad = ?, 
+                    employees_count = ?, employee_categories = ?, working_hours = ?, 
+                    taxis_sepnet_codes = ?, legal_representative = ?, accounting_office = ?
+                WHERE id = ? AND username = ?
+            ''', (
+                name, phone, email, address, afm, kad, 
+                employees_count, employee_categories, working_hours, 
+                taxis_sepnet_codes, legal_representative, accounting_office, 
+                client_id, username
+            ))
+            conn.commit()
+            flash('Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς!', 'success')
+            return redirect(url_for('client_detail', client_id=client_id))
+            
+    return render_template('edit_client.html', client=client, username=username)
+
+# Διαγραφή Πελάτη
+@app.route('/client/delete/<int:client_id>')
+@login_required
+def delete_client(client_id):
+    username = session['username']
+    with get_db() as conn:
+        conn.execute('DELETE FROM clients WHERE id = ? AND username = ?', (client_id, username))
+        conn.commit()
+    flash('Ο πελάτης διαγράφηκε επιτυχώς.', 'success')
+    return redirect(url_for('clients'))

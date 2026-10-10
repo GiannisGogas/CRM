@@ -47,6 +47,14 @@
             </div>
         </div>
 
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1 style="color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Καρτέλα Πελάτη: {{ client.name }}</h1>
+            <div>
+                <a href="{{ url_for('edit_client', client_id=client.id) }}" style="background-color: #ffc107; color: #000; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-right: 10px;">✏️ Επεξεργασία</a>
+                <a href="{{ url_for('delete_client', client_id=client.id) }}" style="background-color: #dc3545; color: #fff; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;" onclick="return confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον πελάτη;');">🗑️ Διαγραφή</a>
+            </div>
+        </div>
+
         <!-- Συνδεδεμένες Συμβάσεις Πελάτη -->
         <div class="card shadow">
             <div class="card-header bg-dark text-white">

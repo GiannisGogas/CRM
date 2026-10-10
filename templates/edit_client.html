@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Επεξεργασία Πελάτη - CRM</title>
+    <style>
+        body.light-mode {
+            background-image: url("{{ url_for('static', filename='back2.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding-top: 20px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .sidebar h2 { color: #fff; font-size: 18px; text-align: center; padding: 0 10px; }
+        .sidebar a { display: block; color: #fff; padding: 12px 20px; text-decoration: none; transition: background 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background-color: #007bff; }
+        .container {
+            margin-left: 270px;
+            padding: 40px;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .row { display: flex; gap: 15px; }
+        .col { flex: 1; }
+        .btn-submit { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; }
+        .btn-submit:hover { background-color: #0056b3; }
+        .back-link { display: inline-block; margin-top: 20px; color: #fff; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="sidebar">
+        <h2>Τεχνικό CRM</h2>
+        <a href="{{ url_for('index') }}">Εργασίες</a>
+        <a href="{{ url_for('calendar') }}">Ημερολόγιο</a>
+        <a href="{{ url_for('clients') }}" class="active">Πελάτες</a>
+        <a href="{{ url_for('contracts') }}">Συμβάσεις</a>
+        <a href="{{ url_for('logout') }}">Αποσύνδεση</a>
+    </div>
+
+    <div class="container">
+        <h1 style="color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Επεξεργασία Πελάτη: {{ client.name }}</h1>
+        <div class="form-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Όνομα / Επωνυμία Πελάτη *</label>
+                    <input type="text" name="name" value="{{ client.name }}" required>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                        <label>Τηλέφωνο</label>
+                        <input type="text" name="phone" value="{{ client.phone or '' }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ client.email or '' }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Διεύθυνση</label>
+                    <input type="text" name="address" value="{{ client.address or '' }}">
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                        <label>ΑΦΜ</label>
+                        <input type="text" name="afm" value="{{ client.afm or '' }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>ΚΑΔ</label>
+                        <input type="text" name="kad" value="{{ client.kad or '' }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                        <label>Πλήθος Εργαζομένων</label>
+                        <input type="text" name="employees_count" value="{{ client.employees_count or '' }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Κατηγορίες Εργαζομένων</label>
+                        <input type="text" name="employee_categories" value="{{ client.employee_categories or '' }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ωράριο Λειτουργίας</label>
+                    <input type="text" name="working_hours" value="{{ client.working_hours or '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Κωδικοί Taxis - Sepnet</label>
+                    <input type="text" name="taxis_sepnet_codes" value="{{ client.taxis_sepnet_codes or '' }}">
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                        <label>Νόμιμος Εκπρόσωπος</label>
+                        <input type="text" name="legal_representative" value="{{ client.legal_representative or '' }}">
+                    </div>
+                    <div class="form-group col">
+                        <label>Λογιστικό Γραφείο</label>
+                        <input type="text" name="accounting_office" value="{{ client.accounting_office or '' }}">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Αποθήκευση Αλλαγών</button>
+            </form>
+        </div>
+        <a class="back-link" href="{{ url_for('client_detail', client_id=client.id) }}">← Πίσω στην Καρτέλα</a>
+    </div>
+</body>
+</html>
