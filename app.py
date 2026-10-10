@@ -461,30 +461,67 @@ def delete_contract(contract_id):
     return redirect(url_for('contracts'))
 
 
+# 1. Λίστα Πελατών
 @app.route('/clients')
+@login_required
 def clients():
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-        
+    username = session['username']
     with get_db() as conn:
-        # Παίρνουμε όλους τους μοναδικούς πελάτες από τις συμβάσεις ή τον πίνακα clients
-        clients_list = conn.execute('SELECT DISTINCT client FROM contracts WHERE username = ? ORDER BY client ASC', (username,)).fetchall()
+        # Παίρνουμε όλους τους πελάτες από τον πίνακα clients
+        clients_list = conn.execute('SELECT * FROM clients WHERE username = ? ORDER BY name ASC', (username,)).fetchall()
         
     return render_template('clients.html', clients=clients_list, username=username)
 
-# 2. Ατομική Καρτέλα Πελάτη (με τις συμβάσεις του)
-@app.route('/client/<path:client_name>')
-def client_detail(client_name):
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-        
-    with get_db() as conn:
-        # Παίρνουμε όλες τις συμβάσεις του συγκεκριμένου πελάτη
-        client_contracts = conn.execute('SELECT * FROM contracts WHERE username = ? AND client = ?', (username, client_name)).fetchall()
-        
-    return render_template('client_detail.html', client_name=client_name, contracts=client_contracts, username=username)
+# 1β. Προσθήκη Νέου Πελάτη
+@app.route('/clients/add', methods=['GET', 'POST'])
+@login_required
+def add_client():
+    username = session['username']
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        email = request.form.get('email')
+        address = request.form.get('address')
+        afm = request.form.get('afm')
+        kad = request.form.get('kad')
+        employees_count = request.form.get('employees_count')
+        employee_categories = request.form.get('employee_categories')
+        working_hours = request.form.get('working_hours')
+        taxis_sepnet_codes = request.form.get('taxis_sepnet_codes')
+        legal_representative = request.form.get('legal_representative')
+        accounting_office = request.form.get('accounting_office')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        with get_db() as conn:
+            conn.execute('''
+                INSERT INTO clients (
+                    username, name, phone, email, address, afm, kad, 
+                    employees_count, employee_categories, working_hours, 
+                    taxis_sepnet_codes, legal_representative, accounting_office
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                username, name, phone, email, address, afm, kad, 
+                employees_count, employee_categories, working_hours, 
+                taxis_sepnet_codes, legal_representative, accounting_office
+            ))
+            conn.commit()
+        return redirect(url_for('clients'))
+        
+    return render_template('add_client.html', username=username)
+
+# 2. Ατομική Καρτέλα Πελάτη (με όλα τα στοιχεία και τις συμβάσεις του)
+@app.route('/client/<int:client_id>')
+@login_required
+def client_detail(client_id):
+    username = session['username']
+    with get_db() as conn:
+        # Παίρνουμε τα στοιχεία του πελάτη
+        client = conn.execute('SELECT * FROM clients WHERE id = ? AND username = ?', (client_id, username)).fetchone()
+        if not client:
+            flash('Ο πελάτης δεν βρέθηκε.', 'error')
+            return redirect(url_for('clients'))
+            
+        # Παίρνουμε τις συμβάσεις που σχετίζονται με το όνομα του πελάτη
+        client_name = client['name'] if isinstance(client, dict) or hasattr(client, '__getitem__') else client[2] # ανάλογα το row factory
+        client_contracts = conn.execute('SELECT * FROM contracts WHERE username = ? AND client = ?', (username, client['name'])).fetchall()
+        
+    return render_template('client_detail.html', client=client, contracts=client_contracts, username=username)
