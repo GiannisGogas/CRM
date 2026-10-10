@@ -70,50 +70,96 @@ def get_db():
 
 def init_db():
     with get_db() as conn:
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL
-            )
-        ''')
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
-                task TEXT NOT NULL,
-                deadline TEXT NOT NULL,
-                priority TEXT NOT NULL
-            )
-        ''')
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS contacts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
-                name TEXT NOT NULL,
-                phone TEXT NOT NULL
-            )
-        ''')
-        conn.execute('''
-            CREATE TABLE IF NOT EXISTS notes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
-                title TEXT,
-                content TEXT NOT NULL
-            )
-        ''')
-
-        conn.execute('''
-        CREATE TABLE IF NOT EXISTS contracts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            title TEXT NOT NULL,
-            client TEXT NOT NULL,
-            manager TEXT NOT NULL,
-            deadline TEXT NOT NULL,
-            amount TEXT
-            )
-        ''')
+        if DATABASE_URL:
+            # Σ syntax για PostgreSQL / Supabase
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    task TEXT NOT NULL,
+                    deadline TEXT NOT NULL,
+                    priority TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS contacts (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    phone TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS notes (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS contracts (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    client TEXT NOT NULL,
+                    manager TEXT NOT NULL,
+                    deadline TEXT NOT NULL,
+                    amount TEXT
+                )
+            ''')
+        else:
+            # Σ syntax για SQLite (Τοπικά)
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL,
+                    task TEXT NOT NULL,
+                    deadline TEXT NOT NULL,
+                    priority TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS contacts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    phone TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS notes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT NOT NULL
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS contracts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    client TEXT NOT NULL,
+                    manager TEXT NOT NULL,
+                    deadline TEXT NOT NULL,
+                    amount TEXT
+                )
+            ''')
         conn.commit()
 
 init_db()
@@ -127,8 +173,6 @@ def save_user_db(username, password_hash):
     with get_db() as conn:
         conn.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password_hash))
         conn.commit()
-
-
 
 def login_required(f):
     @wraps(f)
@@ -194,7 +238,6 @@ def delete_task(task_id):
         conn.execute('DELETE FROM tasks WHERE id = ? AND username = ?', (task_id, username))
         conn.commit()
     return redirect(url_for('index'))
-
 @app.route('/calendar')
 def calendar():
     username = session.get('username')
